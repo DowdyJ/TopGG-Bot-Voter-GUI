@@ -1,0 +1,82 @@
+import React, { useState } from "react";
+import { View, Text } from "react-native";
+import BooleanInput from "./BooleanInput";
+import SettingsSection from "./SettingsSection";
+import StringInput from "./StringInput";
+import UserList from "./UserList";
+
+const App = () => {
+  const [formValues, setFormValues] = useState({
+    field1: "",
+    field2: "",
+    repeatVote: false,
+    useRealScreen: true
+  });
+
+  const handleInputChange = (fieldName, text) => {
+    setFormValues({
+      ...formValues,
+      [fieldName]: text
+    });
+  };
+
+  const fields = [
+    {
+      name: "field1",
+      label: "Discord Username",
+      type: "string"
+    },
+    {
+      name: "field2",
+      label: "2Captcha API Key (optional)",
+      type: "string"
+    },
+    {
+      name: "repeatVote",
+      label: "Should repeat vote?",
+      type: "boolean"
+    },
+    {
+      name: "useRealScreen",
+      label: "Use real screen?",
+      type: "boolean"
+    }
+  ];
+
+  return (
+    <View>
+      <UserList />
+      <SettingsSection>
+        {fields.map((field) => {
+          if (field.type === "string") {
+            return (
+              <StringInput
+                key={field.name}
+                label={field.label}
+                value={formValues[field.name]}
+                onChange={(text) => handleInputChange(field.name, text)}
+                isValid={true}
+              />
+            );
+          } else if (field.type === "boolean") {
+            return (
+              <BooleanInput
+                key={field.name}
+                label={field.label}
+                value={formValues[field.name]}
+                onChange={(text) => handleInputChange(field.name, text)}
+                isValid={true}
+              />
+            );
+          } else {
+          }
+        })}
+      </SettingsSection>
+      <Text>Field 1 value: {formValues.field1}</Text>
+      <Text>Field 2 value: {formValues.field2}</Text>
+    </View>
+  );
+};
+
+export default App;
+
