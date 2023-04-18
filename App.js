@@ -19,6 +19,7 @@ const App = () => {
         </View>
         <View style={styles.rightColumn}>
           <View style={styles.settings}>
+            <Text>egger2</Text>
             <SettingsSection />
           </View>
         </View>
@@ -36,13 +37,13 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   leftColumn: {
-    flex: 2,
+    flex: 3,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch"
   },
   rightColumn: {
-    flex: 1,
+    flex: 2,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "stretch"
