@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import UserList from "./UserList";
-import ExistingUserList from "./ExistingUserList";
-import SettingsSection from "./SettingsSection";
+import UserList from "./src/UserList";
+import ExistingUserList from "./src/ExistingUserList";
+import SettingsSection from "./src/SettingsSection";
 const App = () => {
   return (
     <View>
