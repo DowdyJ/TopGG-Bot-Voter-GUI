@@ -1,31 +1,43 @@
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import UserList from "./src/UserList";
+import { StyleSheet, View, Text, Button } from "react-native";
+import UserInput from "./src/UserInput";
+import VMI from "./src/ViewModelInterface";
 import ExistingUserList from "./src/ExistingUserList";
 import SettingsSection from "./src/SettingsSection";
+import { EventEmitter } from 'events';
+import SearchComponent from "./src/SearchComponent";
+
+let eventEmitter = new EventEmitter();
+
 const App = () => {
   return (
     <View>
       <View style={styles.container}>
-        <View style={styles.leftColumn}>
-          <View style={styles.userInput}>
-            <UserList />
+        <View>
+          <View>
+            <SearchComponent eventEmitter={eventEmitter} />
           </View>
         </View>
         <View style={styles.leftColumn}>
           <View style={styles.userInput}>
-            <ExistingUserList />
+            <UserInput eventEmitter={eventEmitter}/>
+          </View>
+        </View>
+        <View style={styles.leftColumn}>
+          <View style={styles.userInput}>
+            <ExistingUserList updateEmitter={eventEmitter}/>
           </View>
         </View>
         <View style={styles.rightColumn}>
           <View style={styles.settings}>
-            <Text>egger2</Text>
-            <SettingsSection />
+            <SettingsSection eventHandler={eventEmitter} />
           </View>
+          <Button onPress={() => eventEmitter.emit("applySettings")}>Apply Settings</Button>
+          <Button onPress={() => VMI.PrintSettings()}>Apply Settings</Button>
         </View>
       </View>
       <View style={styles.bottomSection}>
-        <Text style={styles.bottomText}>Eg wd wd wdg</Text>
+        <Text style={styles.bottomText}>Console Text Eventually!</Text>
       </View>
     </View>
   );

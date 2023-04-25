@@ -2,30 +2,33 @@ import { React, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import StringInput from './StringInput';
 import BooleanInput from './BooleanInput'
+import VMI from './ViewModelInterface';
 
-const SettingsSection = () => {
+const SettingsSection = ({eventHandler}) => {
   const [formValues, setFormValues] = useState({
-    field1: "test",
-    field2: "test2",
+    twoCaptchaAPIKey: "(your api key here)",
     repeatVote: false,
     useRealScreen: true
   });
 
-  const handleInputChange = (fieldName, text) => {
+  const handleInputChange = (fieldName, value) => {
     setFormValues({
       ...formValues,
-      [fieldName]: text
+      [fieldName]: value
     });
   };
 
+  const applySettings = () => {
+    VMI.SetSetting("twocaptchaAPIKey", formValues["twoCaptchaAPIKey"]);
+    VMI.SetSetting("real_screen", formValues["useRealScreen"] ? "TRUE" : "FALSE");
+    VMI.SetSetting("autoloop", formValues["repeatVote"] ? "TRUE" : "FALSE");
+  }
+
+  eventHandler.on("applySettings", () => applySettings());
+
   const fields = [
     {
-      name: "field1",
-      label: "Discord Username",
-      type: "string"
-    },
-    {
-      name: "field2",
+      name: "twoCaptchaAPIKey",
       label: "2Captcha API Key (optional)",
       type: "string"
     },
@@ -59,6 +62,7 @@ const SettingsSection = () => {
               <BooleanInput
                 key={field.name}
                 label={field.label}
+                initialValue={formValues[field.name]}
                 value={formValues[field.name]}
                 onChange={(text) => handleInputChange(field.name, text)}
                 isValid={true}
@@ -67,7 +71,6 @@ const SettingsSection = () => {
           } else {
           }
         })}
-      <Text>Field 1 value: {formValues.field1}</Text>
       <Text>Field 2 value: {formValues.field2}</Text>
     </>
   );

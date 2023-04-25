@@ -32,7 +32,7 @@ const StringInput = ({ label, value, onChange, isValid }) => {
         />
       </View>
       {!isValid && (
-        <Text style={styles.errorText}>{label} must be a string.</Text>
+        <Text style={styles.errorText}>{label} cannot be empty.</Text>
       )}
     </View>
   );
