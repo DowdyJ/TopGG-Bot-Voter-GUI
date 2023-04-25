@@ -71,7 +71,6 @@ const SettingsSection = ({eventHandler}) => {
           } else {
           }
         })}
-      <Text>Field 2 value: {formValues.field2}</Text>
     </>
   );
 };

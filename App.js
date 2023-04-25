@@ -11,12 +11,11 @@ let eventEmitter = new EventEmitter();
 
 const App = () => {
   return (
-    <View>
+    <View style={styles.appContainer}>
+    <View style={styles.outerContainer}>
       <View style={styles.container}>
         <View>
-          <View>
-            <SearchComponent eventEmitter={eventEmitter} />
-          </View>
+          <SearchComponent eventEmitter={eventEmitter} />
         </View>
         <View style={styles.leftColumn}>
           <View style={styles.userInput}>
@@ -40,10 +39,20 @@ const App = () => {
         <Text style={styles.bottomText}>Console Text Eventually!</Text>
       </View>
     </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  appContainer: {
+    width: "75%",
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  outerContainer: {
+    flex: 1,
+    flexDirection: "column",
+  },
   container: {
     flex: 1,
     flexDirection: "row"
