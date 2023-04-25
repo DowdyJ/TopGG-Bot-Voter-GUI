@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Button } from "react-native";
+import { StyleSheet, View, Button, Text } from "react-native";
 import StringInput from "./StringInput";
 import VMI from "./ViewModelInterface";
 import User from "./User";
@@ -14,6 +14,7 @@ const UserInput = ({eventEmitter}) => {
   const [dummy, setDummy] = useState(false);
   eventEmitter.on("updateRegisteredBotList", () => {setDummy(!dummy)});
   
+
   const addUser = () => {
     if (!isDisabled) {
       VMI.AddUser(new User(username, password, email, bots));
@@ -29,6 +30,7 @@ const UserInput = ({eventEmitter}) => {
       <StringInput label="Username" value={username} onChange={setUsername} isValid={() => username !== ""} />
       <StringInput label="Password" value={password} onChange={setPassword} isValid={() => password !== ""} />
       <StringInput label="Email" value={email} onChange={setEmail} isValid={() => email !== ""} />
+      <Text style={styles.label}>Bots:</Text> 
       <MultiSelectList setSelectedBots={setBots} eventEmitter={eventEmitter}/>
       <Button title="Add User" onPress={addUser} disabled={isDisabled} />
     </View>
@@ -36,6 +38,10 @@ const UserInput = ({eventEmitter}) => {
 };
 
 const styles = StyleSheet.create({
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   container: {
     backgroundColor: "white",
     padding: 10

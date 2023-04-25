@@ -39,7 +39,11 @@ const MultiSelectList = ({ setSelectedBots, eventEmitter }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      {
+        VMI.GetBotList().length === 0 ? 
+        <Text style={styles.quietText}>No bots yet! Search for the bots you'd like and add them to this list with the "Register Bot" button</Text> :
+        <><Text style={styles.quietText}>Click the bots you'd like this user to vote for, then click "Add User"</Text>
+        <FlatList
         style={styles.list}
         data={VMI.GetBotList()}
         renderItem={({ item, index }) => (
@@ -50,18 +54,24 @@ const MultiSelectList = ({ setSelectedBots, eventEmitter }) => {
           />
         )}
         keyExtractor={(item, index) => index.toString()}
-      />
+      /></>
+      }
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  quietText: {
+    fontStyle: "italic",
+    color: "gray",
+    fontSize: 14
+  },
   container: {
     flex: 1,
     padding: 16,
   },
   list: {
-    height: 200
+    maxHeight: 200
   },
   listItem: {
     padding: 8,

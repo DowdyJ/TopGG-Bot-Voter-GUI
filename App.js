@@ -45,9 +45,12 @@ const App = () => {
 
 const styles = StyleSheet.create({
   appContainer: {
+    borderWidth: 2,
+    borderColor: "gray",
     width: "75%",
     marginLeft: "auto",
-    marginRight: "auto"
+    marginRight: "auto",
+    marginVertical: 20
   },
   outerContainer: {
     flex: 1,
