@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextInput, View, Text, StyleSheet } from "react-native";
 
-const StringInput = ({ label, value, onChange, isValid }) => {
+const StringInput = ({ label, value, onChange, isValid, placeholder, style }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleBlur = () => {
@@ -19,12 +19,12 @@ const StringInput = ({ label, value, onChange, isValid }) => {
         style={[
           styles.inputContainer,
           isFocused ? styles.inputContainerFocused : null,
-          !isValid ? styles.inputContainerInvalid : null
         ]}
       >
         <TextInput
-          style={styles.input}
+          style={value ? styles.input : styles.inputQuiet}
           value={value}
+          placeholder={placeholder}
           onChangeText={onChange}
           onBlur={handleBlur}
           onFocus={handleFocus}
@@ -41,6 +41,11 @@ const StringInput = ({ label, value, onChange, isValid }) => {
 const styles = StyleSheet.create({
   container: {
     marginBottom: 16
+  },
+  quietText: {
+    fontStyle: "italic",
+    color: "gray",
+    fontSize: 14
   },
   label: {
     fontWeight: "bold",
@@ -60,7 +65,14 @@ const styles = StyleSheet.create({
     borderColor: "#FF3B30"
   },
   input: {
-    fontSize: 16
+    color: "black",
+    fontStyle: "normal",
+    fontSize: 14
+  },
+  inputQuiet: {
+    color: "gray",
+    fontStyle: "italic",
+    fontSize: 12
   },
   errorText: {
     color: "#FF3B30",

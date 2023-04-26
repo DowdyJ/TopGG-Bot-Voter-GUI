@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from "react-native";
 import UserInput from "./src/UserInput";
 import VMI from "./src/ViewModelInterface";
 import ExistingUserList from "./src/ExistingUserList";
@@ -11,37 +11,66 @@ let eventEmitter = new EventEmitter();
 
 const App = () => {
   return (
-    <View style={styles.appContainer}>
+    wholeAppScreen()
+  );
+};
+
+
+function wholeAppScreen() {
+  return (    
+  <View style={styles.appContainer}>
     <View style={styles.outerContainer}>
-      <View style={styles.container}>
-        <View>
-          <SearchComponent eventEmitter={eventEmitter} />
-        </View>
-        <View style={styles.leftColumn}>
-          <View style={styles.userInput}>
-            <UserInput eventEmitter={eventEmitter}/>
-          </View>
-        </View>
-        <View style={styles.leftColumn}>
-          <View style={styles.userInput}>
-            <ExistingUserList updateEmitter={eventEmitter}/>
-          </View>
-        </View>
-        <View style={styles.rightColumn}>
-          <View style={styles.settings}>
-            <SettingsSection eventHandler={eventEmitter} />
-          </View>
-          <Button onPress={() => eventEmitter.emit("applySettings")}>Apply Settings</Button>
-          <Button onPress={() => VMI.PrintSettings()}>Apply Settings</Button>
-        </View>
+      <View>
+        {upperSection()}
       </View>
-      <View style={styles.bottomSection}>
-        <Text style={styles.bottomText}>Console Text Eventually!</Text>
-      </View>
+        {lowerSection()}
     </View>
+  </View>
+    );
+};
+
+function upperSection() {
+  return (
+    <View style={styles.upperContainer}>
+      <View>
+        <SearchComponent eventEmitter={eventEmitter} />
+      </View>
+      <View style={styles.leftColumn}>
+        <View style={styles.userInput}>
+          <UserInput eventEmitter={eventEmitter}/>
+        </View>
+      </View>
+      <View style={styles.leftColumn}>
+        <View style={styles.userInput}>
+          <ExistingUserList updateEmitter={eventEmitter}/>
+        </View>
+      </View>
+      <View style={styles.rightColumn}>
+        <View style={styles.settings}>
+          <SettingsSection eventHandler={eventEmitter} />
+          <TouchableOpacity style={styles.settingsButtons} onPress={() => eventEmitter.emit("applySettings")}>
+            <Text style={styles.buttonText}>Apply Settings</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.settingsButtons} onPress={() => VMI.PrintSettings()}>
+            <Text style={styles.buttonText}>Print Settings</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>);
+};
+
+function lowerSection() {
+  return (
+    <View style={styles.lowerContainer}>
+      <Text style={styles.bottomText}>Output</Text>
+      <View style={styles.consoleContainer}>
+
+      </View>
     </View>
   );
 };
+
+const screenHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   appContainer: {
@@ -50,15 +79,49 @@ const styles = StyleSheet.create({
     width: "75%",
     marginLeft: "auto",
     marginRight: "auto",
-    marginVertical: 20
+    marginVertical: 20,
+    maxHeight: screenHeight * 0.9
   },
   outerContainer: {
     flex: 1,
     flexDirection: "column",
   },
-  container: {
+  upperContainer: {
+    flex: 3,
+    flexDirection: "row",
+    alignItems: "stretch"
+
+  },
+  consoleContainer: {
     flex: 1,
-    flexDirection: "row"
+    borderWidth: 1,
+    borderColor: "red",
+    marginVertical: 10,
+    marginHorizontal: 10
+  },
+  settingsButtons: {
+    backgroundColor: '#2196f3',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 14,
+    color: "white",
+    fontStyle: "italic",
+    fontWeight: "normal"
+  },
+  lowerContainer: {
+    flex: 1,
+    flexDirection: "column",
+    backgroundColor: "#ccc",
+    alignItems: "stretch"
+
+    //alignItems: "center",
+    //justifyContent: "left"
   },
   leftColumn: {
     flex: 3,
@@ -73,20 +136,15 @@ const styles = StyleSheet.create({
     alignItems: "stretch"
   },
   settings: {
-    backgroundColor: "#eee",
-    padding: 10
+    borderWidth: 1,
+    borderColor: "gray",
+    padding: 20,
+    margin: 10
   },
   userInput: {
     backgroundColor: "#fff",
     padding: 10,
     marginBottom: 10
-  },
-  bottomSection: {
-    //flex: 1,
-    backgroundColor: "#ccc",
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "left"
   },
   bottomText: {
     fontSize: 24,

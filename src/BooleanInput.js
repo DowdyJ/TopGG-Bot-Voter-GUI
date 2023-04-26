@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   label: {
     flex: 1,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'normal',
   },
   checkbox: {
     marginLeft: 16,

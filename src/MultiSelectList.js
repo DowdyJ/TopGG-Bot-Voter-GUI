@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   list: {
-    maxHeight: 200
+    maxHeight: 140
   },
   listItem: {
     padding: 8,

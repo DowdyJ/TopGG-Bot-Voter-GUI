@@ -27,9 +27,10 @@ const UserInput = ({eventEmitter}) => {
 
   return (
     <View style={styles.container}>
-      <StringInput label="Username" value={username} onChange={setUsername} isValid={() => username !== ""} />
-      <StringInput label="Password" value={password} onChange={setPassword} isValid={() => password !== ""} />
-      <StringInput label="Email" value={email} onChange={setEmail} isValid={() => email !== ""} />
+      <Text style={styles.title}>Add Users</Text>
+      <StringInput label="Username" value={username} onChange={setUsername} isValid={() => username !== ""} placeholder="Your Discord username (e.g. DoeJ)" />
+      <StringInput label="Password" value={password} onChange={setPassword} isValid={() => password !== ""} placeholder="Your Discord password" />
+      <StringInput label="Email" value={email} onChange={setEmail} isValid={() => email !== ""} placeholder="The email you use with Discord"/>
       <Text style={styles.label}>Bots:</Text> 
       <MultiSelectList setSelectedBots={setBots} eventEmitter={eventEmitter}/>
       <Button title="Add User" onPress={addUser} disabled={isDisabled} />
@@ -41,6 +42,11 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: "bold",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10
   },
   container: {
     backgroundColor: "white",

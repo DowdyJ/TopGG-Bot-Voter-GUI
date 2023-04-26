@@ -6,7 +6,7 @@ import VMI from './ViewModelInterface';
 
 const SettingsSection = ({eventHandler}) => {
   const [formValues, setFormValues] = useState({
-    twoCaptchaAPIKey: "(your api key here)",
+    twoCaptchaAPIKey: "",
     repeatVote: false,
     useRealScreen: true
   });
@@ -30,7 +30,8 @@ const SettingsSection = ({eventHandler}) => {
     {
       name: "twoCaptchaAPIKey",
       label: "2Captcha API Key (optional)",
-      type: "string"
+      type: "string",
+      placeholder: "32 Character Key"
     },
     {
       name: "repeatVote",
@@ -46,13 +47,15 @@ const SettingsSection = ({eventHandler}) => {
 
     return (
       <>
+        <Text style={styles.title}>Settings</Text>
         {fields.map((field) => {
           if (field.type === "string") {
             return (
               <StringInput
                 key={field.name}
-                label={field.label}
                 value={formValues[field.name]}
+                label={field.label}
+                placeholder={field.placeholder}
                 onChange={(text) => handleInputChange(field.name, text)}
                 isValid={true}
               />
@@ -83,14 +86,16 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingHorizontal: 16,
   },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10
+  },
   label: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-  },
-  content: {
-    flex: 1,
-  },
+  }
 });
 
 export default SettingsSection;

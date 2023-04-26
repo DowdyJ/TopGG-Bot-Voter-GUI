@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   TextInput,
@@ -22,43 +22,46 @@ const SearchResult = ({ entry, selected, onPress }) => (
   </TouchableOpacity>
 );
 
-const SearchComponent = ({eventEmitter}) => {
+const SearchComponent = ({ eventEmitter }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const debounceTimeout = useRef(null);
 
-  useEffect(() => {
-    if (searchTerm) {
-      const fetchData = async () => {
-        const response = await fetch(`https://top.gg/api/client/entities/search?platform=discord&entityType=bot&amount=100&nsfwLevel=1&newSortingOrder=TOP&query=${searchTerm}&sort=top&isMature=false`, {
-            "method": "GET",
-            "mode": "cors"
+  const handleChange = (value) => {
+    setSearchTerm(value);
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(async () => {
+      if (value) {
+        const response = await fetch(`https://top.gg/api/client/entities/search?platform=discord&entityType=bot&amount=100&nsfwLevel=1&newSortingOrder=TOP&query=${value}&sort=top&isMature=false`, {
+          "method": "GET",
+          "mode": "cors"
         });
 
         const data = (await response.json()).results.filter(res => res.type === 'bot');
         setResults(data);
-      };
-
-      fetchData();
-    } else {
-      setResults([]);
-    }
-  }, [searchTerm]);
+      } else {
+        setResults([]);
+      }
+    }, 500);
+  };
 
   const handleClick = () => {
     VMI.AddBot(new Bot(results[selectedIndex].name, results[selectedIndex].id, results[selectedIndex].iconUrl))
-    console.log("SENT")
     eventEmitter.emit('updateRegisteredBotList');
-    // Do nothing when the button is clicked
   };
 
   return (
     <View style={styles.container}>
-        <Text>Search For Bots</Text>
+      <Text style={styles.title}>Search For Bots</Text>
       <TextInput
         style={styles.input}
         value={searchTerm}
-        onChangeText={setSearchTerm}
+        onChangeText={handleChange}
         placeholder="Search..."
       />
       <FlatList
@@ -85,17 +88,29 @@ const SearchComponent = ({eventEmitter}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 20,
+  },
+  label: {
+    fontWeight: "bold",
+    marginBottom: 4
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10
   },
   input: {
     height: 40,
     borderColor: 'gray',
     borderWidth: 1,
     paddingLeft: 8,
+    borderRadius: 4,
     marginBottom: 8,
+    fontStyle: "italic",
+    fontSize: 14
   },
   resultList: {
-    height: 400,
+    height: 300,
   },
   searchResult: {
     flexDirection: 'row',
