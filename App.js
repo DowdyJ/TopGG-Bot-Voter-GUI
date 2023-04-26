@@ -56,6 +56,14 @@ function upperSection() {
             <Text style={styles.buttonText}>Print Settings</Text>
           </TouchableOpacity>
         </View>
+        <View>
+          <TouchableOpacity style={VMI.GetIsRunning() ? styles.stopButton : styles.mainButtonDisabled} onPress={() => VMI.PrintSettings()}>
+            <Text style={styles.startButtonText}>Stop</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={VMI.GetIsRunning() ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.PrintSettings()}>
+            <Text style={styles.startButtonText}>Start Voter</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>);
 };
@@ -65,7 +73,7 @@ function lowerSection() {
     <View style={styles.lowerContainer}>
       <Text style={styles.bottomText}>Output</Text>
       <View style={styles.consoleContainer}>
-        <ScrollableText text={VMI.GetOutputText()}/>
+        <ScrollableText height={150} text={VMI.GetOutputText()}/>
       </View>
     </View>
   );
@@ -118,11 +126,47 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 10,
   },
+  startButton: {
+    backgroundColor: '#68C668',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginRight: 5,
+    marginBottom: 10,
+  },
+  stopButton: {
+    backgroundColor: '#C76969',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginRight: 5,
+    marginBottom: 10,
+  },
+  mainButtonDisabled: {
+    backgroundColor: '#dfdfdf',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginRight: 5,
+    marginBottom: 10,
+  },
   buttonText: {
     fontSize: 14,
     color: "white",
     fontStyle: "italic",
     fontWeight: "normal"
+  },
+  startButtonText: {
+    fontSize: 14,
+    color: "white",
+    fontStyle: "normal",
+    fontWeight: "bold"
   },
   lowerContainer: {
     flex: 1,
