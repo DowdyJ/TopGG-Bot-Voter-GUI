@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   label: {
-    fontWeight: "bold",
+    fontWeight: "normal",
     marginBottom: 4
   },
   inputContainer: {

@@ -27,7 +27,7 @@ const UserInput = ({eventEmitter}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add Users</Text>
+      <Text style={styles.title}>Add User</Text>
       <StringInput label="Username" value={username} onChange={setUsername} isValid={() => username !== ""} placeholder="Your Discord username (e.g. DoeJ)" />
       <StringInput label="Password" value={password} onChange={setPassword} isValid={() => password !== ""} placeholder="Your Discord password" />
       <StringInput label="Email" value={email} onChange={setEmail} isValid={() => email !== ""} placeholder="The email you use with Discord"/>
@@ -41,7 +41,7 @@ const UserInput = ({eventEmitter}) => {
 const styles = StyleSheet.create({
   label: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "normal",
   },
   title: {
     fontSize: 18,

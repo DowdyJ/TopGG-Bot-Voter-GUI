@@ -6,6 +6,7 @@ import ExistingUserList from "./src/ExistingUserList";
 import SettingsSection from "./src/SettingsSection";
 import { EventEmitter } from 'events';
 import SearchComponent from "./src/SearchComponent";
+import ScrollableText from "./src/ScrollableConsoleText";
 
 let eventEmitter = new EventEmitter();
 
@@ -64,7 +65,7 @@ function lowerSection() {
     <View style={styles.lowerContainer}>
       <Text style={styles.bottomText}>Output</Text>
       <View style={styles.consoleContainer}>
-
+        <ScrollableText text={VMI.GetOutputText()}/>
       </View>
     </View>
   );
@@ -80,7 +81,14 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     marginVertical: 20,
-    maxHeight: screenHeight * 0.9
+    maxHeight: screenHeight * 0.9,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   outerContainer: {
     flex: 1,
@@ -89,13 +97,15 @@ const styles = StyleSheet.create({
   upperContainer: {
     flex: 3,
     flexDirection: "row",
-    alignItems: "stretch"
-
+    alignItems: "stretch",
+    borderBottomWidth: 1,
+    borderBottomColor: "gray",
   },
   consoleContainer: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "red",
+    borderColor: "gray",
+    backgroundColor: "white",
     marginVertical: 10,
     marginHorizontal: 10
   },
@@ -117,11 +127,9 @@ const styles = StyleSheet.create({
   lowerContainer: {
     flex: 1,
     flexDirection: "column",
-    backgroundColor: "#ccc",
-    alignItems: "stretch"
 
-    //alignItems: "center",
-    //justifyContent: "left"
+    backgroundColor: "white",
+    alignItems: "stretch"
   },
   leftColumn: {
     flex: 3,
@@ -148,7 +156,9 @@ const styles = StyleSheet.create({
   },
   bottomText: {
     fontSize: 24,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    marginTop: 5,
+    marginLeft: 5
   }
 });
 
