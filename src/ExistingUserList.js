@@ -1,89 +1,72 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import VMI from "./ViewModelInterface"
+import VMI from "./ViewModelInterface";
 
-const UserList = ({updateEmitter}) => {
+const UserList = ({ updateEmitter }) => {
   const [selectedUser, setSelectedUser] = useState(null);
-  const handleUserPress = (user) => {
-    if (selectedUser === user) {
-      setSelectedUser(null);
-    } else {
-      setSelectedUser(user); 
-    }
-  };
   const [userList, setUserList] = useState([]);
   const [userListDirty, setUserListDirty] = useState(true);
-  const [userComponents, setUserComponents] = useState(<Text>Loading Users...</Text>);
-  
-  updateEmitter.on("updateUserList", () => {setUserListDirty(true)});
+
+  updateEmitter.on("updateUserList", () => {
+    setUserListDirty(true);
+  });
+
+  const handleUserPress = (user) => {
+    setSelectedUser((prevSelectedUser) => (prevSelectedUser === user ? null : user));
+  };
 
   const handleRemoveUser = (user) => {
     if (selectedUser) {
-      VMI.RemoveUser(user)
+      VMI.RemoveUser(user);
       console.log(`Removing user ${selectedUser}`);
       setSelectedUser(null);
     }
   };
 
-
   useEffect(() => {
-    console.log("Marked undirty");
-    setUserListDirty(false);
-  }, [userList]);
-
-  useEffect(() => {
-    console.log("Setting new userlist");
-    VMI.GetUserList().then((users) => {
-      setUserList(users);
-      const components = users.map(renderUser);
-      setUserComponents(components);
-    });
-  }, [userListDirty]);
+    if (userListDirty) {
+      console.log("Setting new userlist");
+      VMI.GetUserList().then((users) => {
+        setUserList(users);
+        setUserListDirty(false);
+      });
+    } else {
+      const components = userList.map(renderUser);
+    }
+  }, [userListDirty, userList]);
 
   const renderUser = (user) => {
     const isSelected = user === selectedUser;
-    if (isSelected) {
-      return (
-        <TouchableOpacity
-          key={user.username}
-          style={[
-            styles.userContainer,
-            isSelected && { backgroundColor: "#D3D3D3" }
-          ]}
-          onPress={() => handleUserPress(user)}
-        >
-          <Text style={styles.userText}>{user.username}</Text>
-          <Text style={styles.userTextDetails}>Will vote for {user.botsToVoteFor.map(bot => bot.botName).join(", ")}</Text>
-          <TouchableOpacity
-            style={styles.removeButton}
-            onPress={() => handleRemoveUser(user)}
-            disabled={!isSelected}
-          >
-            <Text style={styles.removeButtonText}>Remove</Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      );
-    } else {
-      return (
-        <TouchableOpacity
-          key={user.username}
-          style={[
-            styles.userContainer,
-            isSelected && { backgroundColor: "#D3D3D3" }
-          ]}
-          onPress={() => handleUserPress(user)}
-        >
-          <Text style={styles.userText}>{user.username}</Text>
-        </TouchableOpacity>
-      );      
-    }
 
+    return (
+      <TouchableOpacity
+        key={user.username}
+        style={[styles.userContainer, isSelected && { backgroundColor: "#D3D3D3" }]}
+        onPress={() => handleUserPress(user)}
+      >
+        <Text style={styles.userText}>{user.username}</Text>
+        {isSelected && (
+          <>
+            <Text style={styles.userTextDetails}>
+              Will vote for {user.botsToVoteFor.map((bot) => bot.botName).join(", ")}
+            </Text>
+            <TouchableOpacity
+              style={styles.removeButton}
+              onPress={() => handleRemoveUser(user)}
+              disabled={!isSelected}
+            >
+              <Text style={styles.removeButtonText}>Remove</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </TouchableOpacity>
+    );
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Current Registered Users</Text>
-      { userComponents }
+      {userList.length > 0 ? userList.map(renderUser) : <Text>Loading Users...</Text>}
     </View>
   );
 };
