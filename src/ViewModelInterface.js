@@ -1,4 +1,5 @@
-import User from "./User";
+//const { spawn } = require('child_process');
+import User from './User'
 
 
 export default class VMI {
@@ -23,17 +24,79 @@ export default class VMI {
     '\x1b[95mBright magenta text\x1b[0m',
     '\x1b[96mBright cyan text\x1b[0m',
     ];
+
+    static lastSeenIndex = 0;
+    static outputStrings = [
+    ];
+
+    // installationPath with last slash
+    static StartVote(installationPath) {
+        fetch("http://localhost:40169/users")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+            return data;
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+    }
     
-    static GetOutputText() {
-        return this.ansiStrings;
+    static async GetOutputText() {
+        await fetch("http://localhost:40169/log", {
+            method: "GET",
+            headers: {lastSeenIndex : VMI.lastSeenIndex}
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+        return this.outputStrings;
     }
 
     static GetIsRunning() {
         return false;
     }
 
-    static GetUserList() {
-        return VMI._userList;
+    static async GetUserList() {
+        let users = [];
+        await fetch("http://localhost:40169/users", {
+            method: "GET"
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          for (const user of data.result) {
+            users.push(new User(user.discord_displayname, user.discord_email, user.discord_password, user.bots_to_vote_for));
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+
+
+        console.log(users);
+
+        return users;
     }
     
     static AddUser(user) {

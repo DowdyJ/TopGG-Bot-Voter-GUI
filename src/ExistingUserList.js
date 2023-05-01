@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import VMI from "./ViewModelInterface"
 
@@ -11,9 +11,11 @@ const UserList = ({updateEmitter}) => {
       setSelectedUser(user); 
     }
   };
-
-  const [dummyState, setDummyState] = useState(false);
-  updateEmitter.on("updateUserList", () => {setDummyState(!dummyState);});
+  const [userList, setUserList] = useState([]);
+  const [userListDirty, setUserListDirty] = useState(true);
+  const [userComponents, setUserComponents] = useState(<Text>Loading Users...</Text>);
+  
+  updateEmitter.on("updateUserList", () => {setUserListDirty(true)});
 
   const handleRemoveUser = (user) => {
     if (selectedUser) {
@@ -22,6 +24,21 @@ const UserList = ({updateEmitter}) => {
       setSelectedUser(null);
     }
   };
+
+
+  useEffect(() => {
+    console.log("Marked undirty");
+    setUserListDirty(false);
+  }, [userList]);
+
+  useEffect(() => {
+    console.log("Setting new userlist");
+    VMI.GetUserList().then((users) => {
+      setUserList(users);
+      const components = users.map(renderUser);
+      setUserComponents(components);
+    });
+  }, [userListDirty]);
 
   const renderUser = (user) => {
     const isSelected = user === selectedUser;
@@ -66,7 +83,7 @@ const UserList = ({updateEmitter}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Current Registered Users</Text>
-      {VMI.GetUserList().map(renderUser)}
+      { userComponents }
     </View>
   );
 };

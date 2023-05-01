@@ -60,7 +60,7 @@ function upperSection() {
           <TouchableOpacity style={VMI.GetIsRunning() ? styles.stopButton : styles.mainButtonDisabled} onPress={() => VMI.PrintSettings()}>
             <Text style={styles.startButtonText}>Stop</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={VMI.GetIsRunning() ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.PrintSettings()}>
+          <TouchableOpacity style={VMI.GetIsRunning() ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.StartVote()}>
             <Text style={styles.startButtonText}>Start Voter</Text>
           </TouchableOpacity>
         </View>
