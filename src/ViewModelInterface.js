@@ -1,6 +1,5 @@
-//const { spawn } = require('child_process');
 import User from './User'
-
+import Bot from './Bot'
 
 export default class VMI {
     static _userList = [];
@@ -74,6 +73,27 @@ export default class VMI {
 
     static async GetUserList() {
         let users = [];
+
+        let botNameToIds;
+
+        await fetch ("http://localhost:40169/bots", {
+            method: "GET"
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        )
+        .then((data) => {
+            botNameToIds = data.result;
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+
+
         await fetch("http://localhost:40169/users", {
             method: "GET"
         })
@@ -86,7 +106,18 @@ export default class VMI {
         .then((data) => {
           console.log(data);
           for (const user of data.result) {
-            users.push(new User(user.discord_displayname, user.discord_email, user.discord_password, user.bots_to_vote_for));
+            let bots = [];
+
+            for (const botEntry of user.bots_to_vote_for) {
+                if (!(botEntry in botNameToIds)) {
+                    console.log(`Tried to get a bot whose ID was not registered. Bot name is ${botEntry}`);
+                    continue;
+                }
+
+                bots.push(new Bot(botEntry, botNameToIds[`${botEntry}`], "https://em-content.zobj.net/thumbs/120/noto-emoji/343/chicken_1f414.jpg"))
+            }
+
+            users.push(new User(user.discord_displayname, user.discord_email, user.discord_password, bots));
           }
         })
         .catch((error) => {
