@@ -4,11 +4,10 @@ import UserInput from "./src/UserInput";
 import VMI from "./src/ViewModelInterface";
 import ExistingUserList from "./src/ExistingUserList";
 import SettingsSection from "./src/SettingsSection";
-import { EventEmitter } from 'events';
 import SearchComponent from "./src/SearchComponent";
 import ScrollableText from "./src/ScrollableConsoleText";
-
-let eventEmitter = new EventEmitter();
+import EventHandler from "./src/EventHandler";
+import StartStopButtons from "./src/StartStopButtons";
 
 const App = () => {
   return (
@@ -34,22 +33,22 @@ function upperSection() {
   return (
     <View style={styles.upperContainer}>
       <View>
-        <SearchComponent eventEmitter={eventEmitter} />
+        <SearchComponent eventEmitter={EventHandler.Instance()} />
       </View>
       <View style={styles.leftColumn}>
         <View style={styles.userInput}>
-          <UserInput eventEmitter={eventEmitter}/>
+          <UserInput eventEmitter={EventHandler.Instance()}/>
         </View>
       </View>
       <View style={styles.leftColumn}>
         <View style={styles.userInput}>
-          <ExistingUserList updateEmitter={eventEmitter}/>
+          <ExistingUserList updateEmitter={EventHandler.Instance()}/>
         </View>
       </View>
       <View style={styles.rightColumn}>
         <View style={styles.settings}>
-          <SettingsSection eventHandler={eventEmitter} />
-          <TouchableOpacity style={styles.settingsButtons} onPress={() => eventEmitter.emit("applySettings")}>
+          <SettingsSection eventHandler={EventHandler.Instance()} />
+          <TouchableOpacity style={styles.settingsButtons} onPress={() => VMI.WriteSettings()}>
             <Text style={styles.buttonText}>Apply Settings</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.settingsButtons} onPress={() => VMI.PrintSettings()}>
@@ -57,12 +56,7 @@ function upperSection() {
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity style={VMI.GetIsRunning() ? styles.stopButton : styles.mainButtonDisabled} onPress={() => VMI.PrintSettings()}>
-            <Text style={styles.startButtonText}>Stop</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={VMI.GetIsRunning() ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.StartVote()}>
-            <Text style={styles.startButtonText}>Start Voter</Text>
-          </TouchableOpacity>
+          <StartStopButtons />
         </View>
       </View>
     </View>);
@@ -126,48 +120,14 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginBottom: 10,
   },
-  startButton: {
-    backgroundColor: '#68C668',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    marginRight: 5,
-    marginBottom: 10,
-  },
-  stopButton: {
-    backgroundColor: '#C76969',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    marginRight: 5,
-    marginBottom: 10,
-  },
-  mainButtonDisabled: {
-    backgroundColor: '#dfdfdf',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-    marginRight: 5,
-    marginBottom: 10,
-  },
+
   buttonText: {
     fontSize: 14,
     color: "white",
     fontStyle: "italic",
     fontWeight: "normal"
   },
-  startButtonText: {
-    fontSize: 14,
-    color: "white",
-    fontStyle: "normal",
-    fontWeight: "bold"
-  },
+
   lowerContainer: {
     flex: 1,
     flexDirection: "column",

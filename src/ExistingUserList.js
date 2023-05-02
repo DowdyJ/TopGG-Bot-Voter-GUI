@@ -66,7 +66,7 @@ const UserList = ({ updateEmitter }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Current Registered Users</Text>
-      {userList.length > 0 ? userList.map(renderUser) : <Text>Loading Users...</Text>}
+      {userList.length > 0 ? userList.map(renderUser) : <Text style={styles.quietText}>No users yet! Add users with the dialog on the left. Each user needs the name used in Discord, the email and password to sign in as well as at least one bot for them to vote for.</Text>}
     </View>
   );
 };
@@ -75,6 +75,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10
+  },
+  quietText: {
+    fontStyle: "italic",
+    color: "gray",
+    fontSize: 14
   },
   title: {
     fontSize: 18,

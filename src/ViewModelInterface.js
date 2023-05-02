@@ -1,5 +1,6 @@
 import User from './User'
 import Bot from './Bot'
+import EventHandler from './EventHandler';
 
 export default class VMI {
     static _userList = [];
@@ -28,22 +29,54 @@ export default class VMI {
     static outputStrings = [
     ];
 
-    // installationPath with last slash
-    static StartVote(installationPath) {
-        fetch("http://localhost:40169/users")
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+    static async StartVote() {
+        const request = { 
+            mode: 'start'
+        }
+
+        await fetch ("http://localhost:40169/control", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(request)
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
             }
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
-            return data;
-          })
-          .catch((error) => {
-            console.error("Error fetching data:", error);
-          });
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        }); 
+
+        EventHandler.Instance().emit("updateIsRunning");
+    }
+
+    static async StopVote() {
+        const request = { 
+            mode: 'stop'
+        }
+
+        await fetch ("http://localhost:40169/control", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(request)
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            }
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        });
+        
+        EventHandler.Instance().emit("updateIsRunning");
     }
     
     static async GetOutputText() {
@@ -67,8 +100,35 @@ export default class VMI {
         return this.outputStrings;
     }
 
-    static GetIsRunning() {
-        return false;
+    static async GetIsRunning() {
+        const request = { 
+            mode: 'status'
+        }
+
+        await fetch ("http://localhost:40169/control", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(request)
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                if (response === "RUNNING") {
+                    return true;
+                } else if (response === "STOPPED") {
+                    return false;
+                } else {
+                    throw new Error(`Unexpected response from server. Reponse was: ${response}`);
+                }
+            }
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        }); 
     }
 
     static async GetUserList() {
@@ -130,20 +190,125 @@ export default class VMI {
         return users;
     }
     
-    static AddUser(user) {
-        VMI._userList.push(user);
+    static async AddUser(user) {
+        const userdata = { 
+            discord_displayname: user.username, 
+            discord_username: user.email, 
+            discord_password: user.password, 
+            bots_to_vote_for: user.botsToVoteFor.map((bot) => bot.botName)
+        }
+
+        const mode = 'add';
+
+        await fetch ("http://localhost:40169/users", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({userData: userdata, mode: mode})
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        }); 
+
+        EventHandler.Instance().emit("updateUserList");
     }
     
-    static RemoveUser(user) {
-        VMI._userList = VMI._userList.filter(u => u != user);
+    static async RemoveUser(user) {
+        const userdata = { 
+            discord_displayname: user.username, 
+            discord_username: user.email, 
+            discord_password: user.password, 
+            bots_to_vote_for: user.botsToVoteFor.map((bot) => bot.botName)
+        }
+
+        const mode = 'remove';
+
+        await fetch ("http://localhost:40169/users", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({userData: userdata, mode: mode})
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        }); 
+        
+        EventHandler.Instance().emit("updateUserList");
     }
 
-    static AddBot(bot) {
-        VMI._botlist.push(bot);
+    static async AddBot(bot) {
+        const botData = { 
+            botName: bot.botName, 
+            botID: bot.botID
+        }
+
+        await fetch ("http://localhost:40169/bots", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify(botData)
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        )
+        .catch((error) => {
+            console.error("Error posting data:", error);
+        });
+
+        EventHandler.Instance().emit('updateRegisteredBotList');
     }
 
-    static GetBotList() {
-        return VMI._botlist;
+    static async GetBotList() {
+
+        let botNameToIds;
+        await fetch ("http://localhost:40169/bots", {
+            method: "GET"
+        })
+        .then((response) => {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            }
+        )
+        .then((data) => {
+            botNameToIds = data.result;
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+        let bots = [];
+
+        for (const botName in botNameToIds) {
+            bots.push(new Bot(
+                botName, 
+                botNameToIds[botName], 
+                "https://em-content.zobj.net/thumbs/120/noto-emoji/343/chicken_1f414.jpg")
+                )
+        }
+
+        return bots;
     }
 
     static SetSetting(key, value) {
