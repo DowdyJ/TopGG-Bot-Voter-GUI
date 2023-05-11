@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   TouchableOpacity,
@@ -10,17 +10,19 @@ import EventHandler from './EventHandler';
 const StartStopButtons = () => {
     const [isRunning, setIsRunning] = useState(false);
 
-    EventHandler.Instance().on("updateIsRunning", () => {
+    useEffect(() => {
+      EventHandler.Instance().on("updateIsRunning", () => {
         VMI.GetIsRunning().then((isRunning) => {
             setIsRunning(isRunning);
         })
     })
+    }, []);
 
     return (<>
-        <TouchableOpacity style={isRunning ? styles.stopButton : styles.mainButtonDisabled} onPress={() => VMI.PrintSettings()}>
+        <TouchableOpacity disabled={!isRunning} style={isRunning ? styles.stopButton : styles.mainButtonDisabled} onPress={() => VMI.PrintSettings()}>
             <Text style={styles.startButtonText}>Stop</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={isRunning ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.StartVote()}>
+        <TouchableOpacity disabled={isRunning} style={isRunning ? styles.mainButtonDisabled : styles.startButton} onPress={() => VMI.StartVote()}>
             <Text style={styles.startButtonText}>Start Voter</Text>
         </TouchableOpacity>
     </>)

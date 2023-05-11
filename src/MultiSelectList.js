@@ -23,11 +23,15 @@ const MultiSelectList = ({ setSelectedBots, eventEmitter }) => {
   const [selectedIndices, setSelectedIndices] = useState([]);
   const [botList, setBotList] = useState([]);
 
-  VMI.GetBotList().then((result) => {
-    setBotList(result);
-  }).catch((err) => {
-    console.log(`ERROR. Could not set bot list from GetBotList(). Details: ${err}`);
-  })
+  useEffect(() => {
+    eventEmitter.on("updateRegisteredBotList", () => {
+      VMI.GetBotList().then((result) => {
+        setBotList(result);
+      }).catch((err) => {
+        console.log(`ERROR. Could not set bot list from GetBotList(). Details: ${err}`);
+      })
+    });
+  }, []);
 
     useEffect(() => {
         setSelectedBots(selectedIndices.map(index => botList[index]));

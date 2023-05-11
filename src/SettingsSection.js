@@ -1,4 +1,4 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import StringInput from './StringInput';
 import BooleanInput from './BooleanInput'
@@ -24,7 +24,9 @@ const SettingsSection = ({eventHandler}) => {
     VMI.SetSetting("autoloop", formValues["repeatVote"] ? "TRUE" : "FALSE");
   }
 
-  eventHandler.on("applySettings", () => applySettings());
+  useEffect(() => {
+    eventHandler.on("applySettings", () => applySettings());
+  }, [])
 
   const fields = [
     {

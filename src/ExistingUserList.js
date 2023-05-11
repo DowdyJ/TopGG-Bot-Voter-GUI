@@ -7,9 +7,11 @@ const UserList = ({ updateEmitter }) => {
   const [userList, setUserList] = useState([]);
   const [userListDirty, setUserListDirty] = useState(true);
 
-  updateEmitter.on("updateUserList", () => {
-    setUserListDirty(true);
-  });
+  useEffect(()=> {
+    updateEmitter.on("updateUserList", () => {
+      setUserListDirty(true);
+    });
+  }, [])
 
   const handleUserPress = (user) => {
     setSelectedUser((prevSelectedUser) => (prevSelectedUser === user ? null : user));

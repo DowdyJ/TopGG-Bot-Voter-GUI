@@ -10,6 +10,7 @@ import EventHandler from "./src/EventHandler";
 import StartStopButtons from "./src/StartStopButtons";
 
 const App = () => {
+  VMI.Init();
   return (
     wholeAppScreen()
   );
@@ -67,7 +68,7 @@ function lowerSection() {
     <View style={styles.lowerContainer}>
       <Text style={styles.bottomText}>Output</Text>
       <View style={styles.consoleContainer}>
-        <ScrollableText height={150} text={VMI.GetOutputText()}/>
+        <ScrollableText height={150}/>
       </View>
     </View>
   );

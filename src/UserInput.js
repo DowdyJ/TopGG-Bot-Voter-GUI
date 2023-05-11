@@ -10,9 +10,6 @@ const UserInput = ({eventEmitter}) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [bots, setBots] = useState([]);
-
-  const [dummy, setDummy] = useState(false);
-  eventEmitter.on("updateRegisteredBotList", () => {setDummy(!dummy)});
   
 
   const addUser = () => {
