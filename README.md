@@ -14,4 +14,10 @@ Now, to install:
 To run the project:
 1. Open a terminal in the folder with node_modules
 2. Run `npx expo start`
-3. Navigate to `http://localhost:8081`
+3. After it finishes loading, it should instruct you to press "w" to open a web view. Press "w" as instructed.
+4. A new browser tab should be opened automatically. If not, navigate to `http://localhost:19006`
+
+If the API Server is running an configured correctly, you should be able to control the bot voter application from the new tab.
+
+## License
+This project is licensed under the MIT license.
