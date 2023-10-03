@@ -4,7 +4,7 @@ It should only be used in conjunction with the [API Server](https://github.com/D
 
 ## Installation
 The solution works on both Windows and Linux.
-First, you need Node.js installed. You can get it [here](https://nodejs.org/en/download/current). You must use Node 18.0 or above!
+You will need Node.js 18.0 or higher installed. You can get it [here](https://nodejs.org/en/download/current). **You must use Node 18.0 or above**!
 
 Now, to install:
 1. Download or clone the repository.
